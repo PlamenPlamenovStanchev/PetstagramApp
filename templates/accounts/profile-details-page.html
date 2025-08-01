@@ -1,0 +1,106 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Starts Main Section -->
+    <main>
+        <!-- Start Profile Details Section -->
+        <div class="profile">
+            <!-- Start Profile Personal Data Section -->
+            <div class="profile-data">
+                <div class="profile_img">
+                    <div class="image">
+                        {% include 'common/profile-image.html' with profile_picture=object.profile_picture %}
+                    </div>
+                </div>
+                <div class="personal">
+                    <div class="edit">
+                        <!-- User Username -->
+                        <p>{{ object.user.email }}</p>
+
+                        {% if profile.pk == request.user.pk %}
+                            <a href="{% url 'edit-profile' request.user.pk %}">
+                                <img
+                                        class="edit-img"
+                                        src="{% static 'images/edit-pen-icon-6.jpg' %}"
+                                        alt="edit button"
+                                />
+                            </a>
+
+                            <!-- Link to Delete Profile Page -->
+                            <a href="{% url 'delete-profile' request.user.pk %}">
+                                <img
+                                        class="bin-img"
+                                        src="{% static 'images/icon-remove-22.jpg' %}"
+                                        alt="bin button"
+                                />
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="data">
+                        <!-- Total Number of Photos by the User -->
+                        <span>{{ photos_count }}</span>
+                        <p>photos</p>
+
+                        <!-- Total Number of Pets owned by the User -->
+                        <span>{{ pets_count }}</span>
+                        <p>pets</p>
+
+                        <!-- Total Number of Likes for the User -->
+                        <span>{{ total_likes }}</span>
+                        <p>likes</p>
+                    </div>
+                    <!-- User First and Last Name IF Added -->
+                    <h3 class="names">{{ profile.full_name }}</h3>
+                </div>
+            </div>
+            <!-- End Profile Personal Data Section -->
+
+            <!-- Start Pets Data Section -->
+            <div class="pets">
+                <div class="statuses">
+                    {% for pet in object.user.pet_set.all %}
+                        <a href="{% url 'pet-details' object.full_name|default:'anonymous' pet.slug %}">
+                            <div class="head-pet">
+                                <div class="status">
+                                    <div class="image">
+                                        <!-- Pet Image -->
+                                        <img
+                                                src="{{ pet.personal_photo }}"
+                                                alt="pet img"
+                                        />
+                                    </div>
+                                </div>
+                                <!-- Pet Name -->
+                                <p>{{ pet.name }}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- End Pets Data Section -->
+
+            <!-- Start Last Uploaded Photos Section -->
+            <div class="pet-photos">
+                {% for photo in object.user.photo_set.all %}
+                    <a href="{% url 'photo-details' photo.pk %}">
+                        <!-- Pet Photo -->
+                        <img
+                                src="{{ photo.photo.url }}"
+                                alt="pet img"
+                        />
+                    </a>
+                {% empty %}
+                    <img
+                            class="no-posts"
+                            src="{% static 'images/no_posts.png' %}"
+                            alt="no posts"
+                    />
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- End Profile Details Section -->
+    </main>
+    <!-- End Main Section -->
+{% endblock %}
